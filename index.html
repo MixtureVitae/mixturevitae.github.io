@@ -426,18 +426,17 @@
       plus a small transparent risk-mitigated slice. Its main bet is simple: put reasoning and instruction data
       into pretraining instead of saving it for fine-tuning.
     </p>
+    <p style="font-size:0.85rem;color:var(--fg3);margin-bottom:1rem;">
+      Numbers below are for a 1.7B base model trained for 300B tokens — no fine-tuning.
+    </p>
     <div class="proof-cards">
       <div class="proof-card">
         <div class="proof-num">0.56</div>
-        <div class="proof-label">avg across 11 tasks<br>1.7B / 300B tokens</div>
+        <div class="proof-label"><strong>Language understanding</strong><br>avg across 11 benchmarks — MMLU, BoolQ, ARC, HellaSwag, Winogrande, and others from the open-sci-ref suite</div>
       </div>
       <div class="proof-card">
-        <div class="proof-num">0.53</div>
-        <div class="proof-label">GSM8K — base model,<br>no fine-tuning</div>
-      </div>
-      <div class="proof-card">
-        <div class="proof-num">0.32 / 0.38</div>
-        <div class="proof-label">HumanEval / MBPP —<br>beats SmolLM2-Instruct (11T tokens)</div>
+        <div class="proof-num">0.53 · 0.32 · 0.38</div>
+        <div class="proof-label"><strong>Math and code</strong> — GSM8K · HumanEval · MBPP<br>beats SmolLM2-1.7B-Instruct, which was fine-tuned on ≈11T tokens</div>
       </div>
     </div>
   </div>
