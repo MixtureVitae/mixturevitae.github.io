@@ -477,12 +477,9 @@
     </p>
 
     <div class="fig-wrap">
-      <div style="display:grid; grid-template-columns:1fr 1fr;">
-        <img src="assets/figures/fig1a_pie.png" alt="Dataset composition by category" loading="lazy" style="width:100%;height:auto;display:block;" />
-        <img src="assets/figures/fig2a_synthetic.png" alt="Synthetic status breakdown by domain" loading="lazy" style="width:100%;height:auto;display:block;border-left:1px solid var(--border);" />
-      </div>
+      <img src="assets/figures/fig2a_synthetic.png" alt="Synthetic status breakdown by domain" loading="lazy" />
       <div class="fig-caption">
-        Most of the corpus is curated or reasoning-focused, not raw web text. The right panel shows how much of each domain is synthetic, mixed, or fully human-written.
+        How much of each domain is synthetic, mixed, or fully human-written.
       </div>
     </div>
 
@@ -672,10 +669,10 @@
         Users who need stricter provenance can exclude it without giving up performance.</p>
       </div>
     </div>
-    <div class="fig-wrap">
+    <div class="fig-wrap" style="max-width:480px;">
       <img src="assets/figures/fig5_ablation.png" alt="Ablation: removing instruction data collapses math and code scores" loading="lazy" />
       <div class="fig-caption">
-        Ablation results: taking out the instruction and reasoning block (orange) causes a large drop across tasks. Taking out web data (blue) has a much smaller effect.
+        Taking out the instruction and reasoning block (orange) causes a large drop. Taking out web data (blue) has a much smaller effect.
       </div>
     </div>
   </div>
