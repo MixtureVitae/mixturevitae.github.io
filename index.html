@@ -49,6 +49,18 @@
     }
     .nav-brand { font-weight: 700; font-size: 0.95rem; color: var(--fg); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
     .nav-brand img { width: 24px; height: 24px; object-fit: contain; border-radius: 4px; }
+
+    /* ── Author list ── */
+    .author-list {
+      display: flex; flex-wrap: wrap; gap: 0.3rem 0.1rem;
+      margin: 1.5rem 0 0;
+      font-size: 0.88rem;
+      color: var(--fg2);
+    }
+    .author-list a { color: var(--fg2); text-decoration: none; border-bottom: 1px solid var(--border); }
+    .author-list a:hover { color: var(--accent); border-color: var(--accent); }
+    .author-sep { color: var(--border); }
+    .author-star { color: var(--fg3); font-size: 0.7rem; vertical-align: super; }
     .nav-links { display: flex; gap: 1.2rem; list-style: none; flex-wrap: wrap; }
     .nav-links a { text-decoration: none; color: var(--fg2); font-size: 0.85rem; }
     .nav-links a:hover { color: var(--accent); }
@@ -426,7 +438,27 @@
       plus a small transparent risk-mitigated slice. Its main bet is simple: put reasoning and instruction data
       into pretraining instead of saving it for fine-tuning.
     </p>
-    <p style="font-size:0.85rem;color:var(--fg3);margin-bottom:1rem;">
+    <div class="author-list">
+      <a href="https://scholar.google.com/citations?user=HLWECfMAAAAJ">Huu Nguyen</a><span class="author-star">*</span><span class="author-sep">,&nbsp;</span>
+      <a href="https://mrcabbage972.github.io/">Victor May</a><span class="author-star">*</span><span class="author-sep">,&nbsp;</span>
+      <a href="https://harshraj172.github.io/">Harsh Raj</a><span class="author-star">*</span><span class="author-sep">,&nbsp;</span>
+      <a href="https://www.fz-juelich.de/profile/nezhurina_m">Marianna Nezhurina</a><span class="author-sep">,&nbsp;</span>
+      <span>Yishan Wang</span><span class="author-sep">,&nbsp;</span>
+      <a href="https://scholar.google.com/citations?user=6-AnvM0AAAAJ">Yanqi Luo</a><span class="author-sep">,&nbsp;</span>
+      <a href="https://github.com/vumichien">Minh Chien Vu</a><span class="author-sep">,&nbsp;</span>
+      <a href="https://taishi-n324.github.io/">Taishi Nakamura</a><span class="author-sep">,&nbsp;</span>
+      <a href="https://kenhktsui.github.io/">Ken Tsui</a><span class="author-sep">,&nbsp;</span>
+      <span>Van Khue Nguyen</span><span class="author-sep">,&nbsp;</span>
+      <a href="https://geoalgo.github.io/">David Salinas</a><span class="author-sep">,&nbsp;</span>
+      <span>Aleksandra Krasnodębska</span><span class="author-sep">,&nbsp;</span>
+      <a href="https://scholar.google.com/citations?user=EvrlaSAAAAAJ">Christoph Schuhmann</a><span class="author-sep">,&nbsp;</span>
+      <a href="https://mila.quebec/en/directory/mats-leon-richter">Mats Leon Richter</a><span class="author-sep">,&nbsp;</span>
+      <a href="https://portal.research.lu.se/en/persons/xuan-son-vu/">Xuan-Son Vu</a><span class="author-sep">,&nbsp;</span>
+      <a href="https://www.fz-juelich.de/profile/jitsev_j">Jenia Jitsev</a>
+      <span style="width:100%;font-size:0.75rem;color:var(--fg3);margin-top:0.3rem;">* equal contribution</span>
+    </div>
+
+    <p style="font-size:0.85rem;color:var(--fg3);margin-bottom:1rem;margin-top:2rem;">
       Numbers below are for a 1.7B base model trained for 300B tokens — no fine-tuning.
     </p>
     <div class="proof-cards">
