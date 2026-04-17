@@ -476,9 +476,12 @@
     </p>
 
     <div class="fig-wrap">
-      <img src="assets/figures/fig2a_synthetic.png" alt="Synthetic status breakdown by domain" loading="lazy" />
+      <div style="display:grid; grid-template-columns:1fr 1fr;">
+        <img src="assets/figures/fig1a_pie.png" alt="Dataset composition by category" loading="lazy" style="width:100%;height:auto;display:block;" />
+        <img src="assets/figures/fig2a_synthetic.png" alt="Synthetic status breakdown by domain" loading="lazy" style="width:100%;height:auto;display:block;border-left:1px solid var(--border);" />
+      </div>
       <div class="fig-caption">
-        How much of each domain is synthetic, mixed, or fully human-written.
+        Most of the corpus is curated or reasoning-focused, not raw web text. The right panel shows how much of each domain is synthetic, mixed, or fully human-written.
       </div>
     </div>
 
@@ -526,12 +529,6 @@
       </div>
     </div>
 
-    <div class="fig-wrap">
-      <img src="assets/figures/fig2b_tiers.png" alt="Figure 2b: Legal provenance and risk-mitigation tiers" loading="lazy" />
-      <div class="fig-caption">
-        Three-quarters of the corpus sits in Tier 1 — explicit open licenses or public domain. The remaining quarter is tagged and can be subsetted.
-      </div>
-    </div>
 
   </div>
 </section>
