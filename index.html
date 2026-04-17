@@ -213,6 +213,16 @@
     .callout-blue { background: var(--accent-light); border-color: #93c5fd; }
     .callout p { color: var(--fg); margin: 0; font-size: 0.92rem; }
     strong { color: var(--fg); }
+    .container a, .proof-label a, .fig-caption a, .faq-body a, .trust-card a {
+      color: var(--accent); text-decoration: none;
+    }
+    .container a:hover, .proof-label a:hover, .fig-caption a:hover, .faq-body a:hover, .trust-card a:hover {
+      text-decoration: underline;
+    }
+    .results-table td a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--border); }
+    .results-table td a:hover { color: var(--accent); border-color: var(--accent); }
+    .results-table th a { color: inherit; text-decoration: none; }
+    .results-table th a:hover { text-decoration: underline; }
 
     /* ── Artifacts ── */
     .artifact-group { margin: 1.5rem 0; }
@@ -465,11 +475,11 @@
     <div class="proof-cards">
       <div class="proof-card">
         <div class="proof-num">0.56</div>
-        <div class="proof-label"><strong>Language understanding</strong><br>avg across 11 benchmarks — MMLU, BoolQ, ARC, HellaSwag, Winogrande, and others from the open-sci-ref suite</div>
+        <div class="proof-label"><strong>Language understanding</strong><br>avg across 11 benchmarks — <a href="https://github.com/hendrycks/test">MMLU</a>, <a href="https://github.com/google-research-datasets/boolean-questions">BoolQ</a>, <a href="https://allenai.org/data/arc">ARC</a>, <a href="https://rowanzellers.com/hellaswag/">HellaSwag</a>, <a href="https://winogrande.allenai.org/">Winogrande</a>, and others from the <a href="https://github.com/malaschitz/open-sci-ref">open-sci-ref</a> suite</div>
       </div>
       <div class="proof-card">
         <div class="proof-num">0.53 · 0.32 · 0.38</div>
-        <div class="proof-label"><strong>Math and code</strong> — GSM8K · HumanEval · MBPP<br>beats SmolLM2-1.7B-Instruct, which was fine-tuned on ≈11T tokens</div>
+        <div class="proof-label"><strong>Math and code</strong> — <a href="https://github.com/openai/grade-school-math">GSM8K</a> · <a href="https://github.com/openai/human-eval">HumanEval</a> · <a href="https://github.com/google-research/google-research/tree/master/mbpp">MBPP</a><br>beats <a href="https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct">SmolLM2-1.7B-Instruct</a>, which was fine-tuned on ≈11T tokens</div>
       </div>
     </div>
   </div>
@@ -540,7 +550,7 @@
         <div>
           <div class="tier-name">Curated Permissive Repositories</div>
           <div class="tier-desc">
-            <strong>2a:</strong> Sources like The Stack v1 and Wikipedia derivatives — released under
+            <strong>2a:</strong> Sources like <a href="https://huggingface.co/datasets/bigcode/the-stack">The Stack v1</a> and Wikipedia derivatives — released under
             permissive licenses, but provenance is only partially tracked at the file level.<br>
             <strong>2b:</strong> ≈4% of the corpus — synthetic data from generators or seeds whose
             provenance cannot be fully verified. Isolated so users can exclude it; removing it has
@@ -571,7 +581,7 @@
   <div class="container">
     <h2>Results</h2>
     <p>
-      All models use the same architecture and hyperparameters — only the dataset changes.
+      All models use the same architecture and hyperparameters under the <a href="https://github.com/malaschitz/open-sci-ref">open-sci-ref</a> protocol — only the dataset changes.
       That makes it straightforward to attribute differences in benchmark scores to the data.
     </p>
 
@@ -597,10 +607,10 @@
           <tr>
             <th>Training dataset</th>
             <th>Tokens</th>
-            <th>IF-Eval</th>
-            <th>GSM8K</th>
-            <th>HumanEval</th>
-            <th>MBPP</th>
+            <th><a href="https://github.com/google-research/google-research/tree/master/instruction_following_eval">IF-Eval</a></th>
+            <th><a href="https://github.com/openai/grade-school-math">GSM8K</a></th>
+            <th><a href="https://github.com/openai/human-eval">HumanEval</a></th>
+            <th><a href="https://github.com/google-research/google-research/tree/master/mbpp">MBPP</a></th>
             <th>Avg</th>
           </tr>
         </thead>
@@ -611,53 +621,53 @@
             <td>300B</td><td>0.19</td><td><strong>0.53</strong></td><td><strong>0.32</strong></td><td><strong>0.38</strong></td><td><strong>0.36</strong></td>
           </tr>
           <tr>
-            <td>Comma-0.1 <span class="tag-permissive">permissive</span></td>
+            <td><a href="https://huggingface.co/datasets/common-pile/comma-0.1">Comma-0.1</a> <span class="tag-permissive">permissive</span></td>
             <td>300B</td><td>0.19</td><td>0.06</td><td>0.13</td><td>0.22</td><td>0.15</td>
           </tr>
           <tr>
-            <td>CommonCorpus <span class="tag-permissive">permissive</span></td>
+            <td><a href="https://huggingface.co/datasets/PleIAs/common_corpus">CommonCorpus</a> <span class="tag-permissive">permissive</span></td>
             <td>300B</td><td>0.13</td><td>0.02</td><td>0.05</td><td>0.05</td><td>0.06</td>
           </tr>
           <tr>
-            <td>C4 <span class="tag-mixed">mixed</span></td>
+            <td><a href="https://huggingface.co/datasets/allenai/c4">C4</a> <span class="tag-mixed">mixed</span></td>
             <td>300B</td><td>0.20</td><td>0.02</td><td>0.00</td><td>0.00</td><td>0.06</td>
           </tr>
           <tr>
-            <td>SlimPajama <span class="tag-mixed">mixed</span></td>
+            <td><a href="https://huggingface.co/datasets/cerebras/SlimPajama-627B">SlimPajama</a> <span class="tag-mixed">mixed</span></td>
             <td>300B</td><td>0.14</td><td>0.02</td><td>0.05</td><td>0.00</td><td>0.05</td>
           </tr>
           <tr>
-            <td>HPLT-2.0 <span class="tag-mixed">mixed</span></td>
+            <td><a href="https://hplt-project.org/datasets/v2.0">HPLT-2.0</a> <span class="tag-mixed">mixed</span></td>
             <td>300B</td><td>0.17</td><td>0.02</td><td>0.00</td><td>0.00</td><td>0.05</td>
           </tr>
           <tr>
-            <td>DCLM <span class="tag-mixed">mixed</span></td>
+            <td><a href="https://github.com/mlfoundations/dclm">DCLM</a> <span class="tag-mixed">mixed</span></td>
             <td>300B</td><td>0.13</td><td>0.02</td><td>0.01</td><td>0.01</td><td>0.04</td>
           </tr>
           <tr>
-            <td>Nemotron-CC-HQ <span class="tag-mixed">mixed</span></td>
+            <td><a href="https://huggingface.co/datasets/nvidia/Nemotron-CC">Nemotron-CC-HQ</a> <span class="tag-mixed">mixed</span></td>
             <td>300B</td><td>0.09</td><td>0.03</td><td>0.02</td><td>0.00</td><td>0.03</td>
           </tr>
           <tr class="group-header"><td colspan="7">open-sci-ref — 1T tokens</td></tr>
           <tr>
-            <td>FineWeb-Edu <span class="tag-mixed">mixed</span></td>
+            <td><a href="https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu">FineWeb-Edu</a> <span class="tag-mixed">mixed</span></td>
             <td>1T</td><td>0.20</td><td>0.03</td><td>0.00</td><td>0.00</td><td>0.06</td>
           </tr>
           <tr>
-            <td>Nemotron-CC-HQ <span class="tag-mixed">mixed</span></td>
+            <td><a href="https://huggingface.co/datasets/nvidia/Nemotron-CC">Nemotron-CC-HQ</a> <span class="tag-mixed">mixed</span></td>
             <td>1T</td><td>0.13</td><td>0.03</td><td>0.01</td><td>0.04</td><td>0.05</td>
           </tr>
           <tr>
-            <td>DCLM <span class="tag-mixed">mixed</span></td>
+            <td><a href="https://github.com/mlfoundations/dclm">DCLM</a> <span class="tag-mixed">mixed</span></td>
             <td>1T</td><td>0.15</td><td>0.03</td><td>0.00</td><td>0.01</td><td>0.05</td>
           </tr>
           <tr class="group-header"><td colspan="7">Reference models</td></tr>
           <tr>
-            <td>SmolLM2-1.7B</td>
+            <td><a href="https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B">SmolLM2-1.7B</a></td>
             <td>11T</td><td>0.18</td><td>0.31</td><td>0.01</td><td>0.35</td><td>0.21</td>
           </tr>
           <tr>
-            <td>SmolLM2-1.7B-Instruct</td>
+            <td><a href="https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct">SmolLM2-1.7B-Instruct</a></td>
             <td>11T</td><td>0.28</td><td>0.37</td><td>0.28</td><td>0.37</td><td>0.33</td>
           </tr>
         </tbody>
@@ -751,12 +761,12 @@
       <div class="faq-body">
         <p>
           Both are permissive baselines. The main difference is synthetic data.
-          The Common Pile (which Comma-0.1 trains on) deliberately avoids synthetic content.
+          The <a href="https://huggingface.co/datasets/common-pile/common-pile">Common Pile</a> (which <a href="https://huggingface.co/datasets/common-pile/comma-0.1">Comma-0.1</a> trains on) deliberately avoids synthetic content.
           MixtureVitae includes a large block of reasoning and instruction data generated from
           permissive seeds — and that turns out to matter a lot for math and code.
         </p>
         <p>
-          On general benchmarks at 1.7B / 300B tokens: MixtureVitae 0.56, Comma-0.1 0.50, CommonCorpus 0.47.
+          On general benchmarks at 1.7B / 300B tokens: MixtureVitae 0.56, <a href="https://huggingface.co/datasets/common-pile/comma-0.1">Comma-0.1</a> 0.50, <a href="https://huggingface.co/datasets/PleIAs/common_corpus">CommonCorpus</a> 0.47.
           On GSM8K specifically: 0.53 vs. 0.06 vs. 0.02.
           Comma-0.1 also repeats most of its sources up to 6× to reach 1T tokens — MixtureVitae
           contains 422B unique tokens without repetition.
