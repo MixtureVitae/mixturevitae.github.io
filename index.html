@@ -430,7 +430,7 @@
   <div class="nav-inner">
     <a class="nav-brand" href="#"><img src="assets/mv_logo.png" alt="MixtureVitae logo" />MixtureVitae</a>
     <ul class="nav-links">
-      <li><a href="#overview">Overview</a></li>
+      <li><a href="#overview">Why different</a></li>
       <li><a href="#dataset">Dataset</a></li>
       <li><a href="#results">Results</a></li>
       <li><a href="#trust">Evidence</a></li>
@@ -488,22 +488,18 @@
 <!-- Overview -->
 <section id="overview">
   <div class="container">
-    <h2>Why this matters</h2>
+    <h2>Why MixtureVitae is different</h2>
     <p>
-      Most high-performing pretraining datasets mix permissive content with copyrighted or ambiguously licensed material.
-      Datasets that stick strictly to permissive sources tend to fall behind on reasoning-heavy benchmarks.
-      That gap has made it hard to build capable models without accepting legal uncertainty.
+      <strong>Most permissive pretraining corpora try to answer a licensing question.</strong> MixtureVitae tries to answer a harder one: how much capability can you recover when the data is provenance-aware from the start.
+      Instead of releasing one more "open" mixture and asking users to trust it, MixtureVitae tags sources by risk tier, keeps synthetic provenance explicit, and lets researchers ablate those choices rather than treating the corpus as a black box.
     </p>
     <p>
-      MixtureVitae is a direct attempt to close that gap. It starts with clearly reusable sources—CC-BY, Apache,
-      public domain—and adds a small, explicitly tagged set of lower-risk additions. Then, instead of treating
-      reasoning and instruction data as something to add later during fine-tuning, it builds them into the
-      pretraining mix from the start. Most synthetic data in the corpus comes from permissive seeds and
-      permissively licensed models; a small transparent slice uses restricted generators and is isolated
-      so users can exclude it if needed.
+      <strong>That is the main difference from <a href="https://huggingface.co/datasets/common-pile/common-pile">The Common Pile</a> / <a href="https://huggingface.co/datasets/common-pile/comma-0.1">Comma-0.1</a>.</strong>
+      Comma-0.1 is a strong permissive baseline, but it is built mostly from traditional permissive sources and reaches its token budget with heavy repetition. MixtureVitae instead combines more unique content with a much denser reasoning and instruction block, so the comparison is not just "cleaner licenses," but a different answer to how permissive data should be composed.
     </p>
     <p>
-      The result: strong benchmark results on a dataset whose provenance you can actually audit.
+      <strong>The point is not to make a narrow capability-shaped dataset.</strong>
+      The point is to build a permissive general-purpose corpus that keeps strong language-understanding performance while recovering much stronger reasoning, math, and code behavior during pretraining itself. In other words: not breadth or reasoning, but breadth with a reasoning-capable foundation.
     </p>
   </div>
 </section>
