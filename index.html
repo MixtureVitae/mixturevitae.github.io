@@ -47,7 +47,8 @@
       gap: 1.5rem;
       flex-wrap: wrap;
     }
-    .nav-brand { font-weight: 700; font-size: 0.95rem; color: var(--fg); text-decoration: none; }
+    .nav-brand { font-weight: 700; font-size: 0.95rem; color: var(--fg); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+    .nav-brand img { width: 24px; height: 24px; object-fit: contain; border-radius: 4px; }
     .nav-links { display: flex; gap: 1.2rem; list-style: none; flex-wrap: wrap; }
     .nav-links a { text-decoration: none; color: var(--fg2); font-size: 0.85rem; }
     .nav-links a:hover { color: var(--accent); }
@@ -74,6 +75,7 @@
       border-bottom: 1px solid var(--border);
     }
     .hero-inner { max-width: var(--max); margin: 0 auto; }
+    .hero-logo { width: 72px; height: 72px; object-fit: contain; border-radius: 12px; margin-bottom: 1.5rem; display: block; }
     .venue-tag {
       display: inline-block;
       background: var(--accent-light);
@@ -329,7 +331,7 @@
 <!-- Nav -->
 <nav>
   <div class="nav-inner">
-    <a class="nav-brand" href="#">MixtureVitae</a>
+    <a class="nav-brand" href="#"><img src="assets/mv_logo.png" alt="MixtureVitae logo" />MixtureVitae</a>
     <ul class="nav-links">
       <li><a href="#overview">Overview</a></li>
       <li><a href="#dataset">Dataset</a></li>
@@ -345,6 +347,7 @@
 <!-- Hero -->
 <section id="hero">
   <div class="hero-inner">
+    <img class="hero-logo" src="assets/mv_logo.png" alt="MixtureVitae logo" />
     <div class="venue-tag">TMLR 2026</div>
     <h1 class="hero-title">Permissive-first pretraining data<br>can be competitive</h1>
     <p class="hero-sub">
