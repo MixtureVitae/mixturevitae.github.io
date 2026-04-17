@@ -102,17 +102,17 @@
     }
     .hero-title {
       font-family: var(--serif);
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-size: clamp(2rem, 5vw, 3rem);
       font-weight: normal;
-      line-height: 1.25;
-      margin-bottom: 0.75rem;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
     }
     .hero-sub {
-      font-size: 1.05rem;
+      font-size: 1rem;
       color: var(--fg2);
-      max-width: 640px;
-      margin-bottom: 2rem;
-      line-height: 1.6;
+      max-width: 680px;
+      margin-bottom: 0;
+      line-height: 1.55;
     }
     .btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 3rem; }
     .btn {
@@ -432,12 +432,8 @@
 <section id="hero">
   <div class="hero-inner">
     <img class="hero-logo" src="assets/mv_logo.png" alt="MixtureVitae logo" />
-    <h1 class="hero-title">Cleaner pretraining data,<br>competitive results.</h1>
-    <p class="hero-sub">
-      MixtureVitae is a 422B-token pretraining corpus built mostly from permissively licensed or public-domain text,
-      plus a small transparent risk-mitigated slice. Its main bet is simple: put reasoning and instruction data
-      into pretraining instead of saving it for fine-tuning.
-    </p>
+    <h1 class="hero-title">MixtureVitae</h1>
+    <p class="hero-sub">Open Web-Scale Pretraining Dataset With High Quality Instruction and Reasoning Data Built from Permissive-First Text Sources</p>
     <div class="author-list">
       <a href="https://scholar.google.com/citations?user=HLWECfMAAAAJ">Huu Nguyen</a><span class="author-star">*</span><span class="author-sep">,&nbsp;</span>
       <a href="https://mrcabbage972.github.io/">Victor May</a><span class="author-star">*</span><span class="author-sep">,&nbsp;</span>
@@ -458,7 +454,9 @@
       <span style="width:100%;font-size:0.75rem;color:var(--fg3);margin-top:0.3rem;">* equal contribution</span>
     </div>
 
-    <p style="font-size:0.85rem;color:var(--fg3);margin-bottom:1rem;margin-top:2rem;">
+    <p style="margin-top:2rem;margin-bottom:0.5rem;color:var(--fg2);">Cleaner pretraining data, competitive results. A 422B-token corpus built mostly from permissively licensed or public-domain text — with reasoning and instruction data in pretraining instead of saved for fine-tuning.</p>
+
+    <p style="font-size:0.85rem;color:var(--fg3);margin-bottom:1rem;margin-top:1.5rem;">
       Numbers below are for a 1.7B base model trained for 300B tokens — no fine-tuning.
     </p>
     <div class="proof-cards">
