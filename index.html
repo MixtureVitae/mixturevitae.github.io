@@ -354,26 +354,6 @@
       MixtureVitae is a 422B-token open web-scale pretraining corpus built from permissive and
       risk-mitigated text sources, with auditable provenance tiers and dense instruction and reasoning data.
     </p>
-    <div class="btn-row">
-      <a class="btn btn-primary" href="assets/MixtureVitae_2026.pdf">Paper PDF</a>
-      <a class="btn" href="#citation">BibTeX</a>
-      <a class="btn" href="#artifacts">Dataset &amp; Code</a>
-      <a class="btn" href="#dataset">Provenance Tiers</a>
-    </div>
-    <div class="stats-row">
-      <div class="stat">
-        <div class="stat-num">422B</div>
-        <div class="stat-label">tokens</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">3</div>
-        <div class="stat-label">provenance tiers</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">36×</div>
-        <div class="stat-label">fewer tokens than SmolLM2<br>on GSM8K / HumanEval / MBPP</div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -420,11 +400,12 @@
     </p>
 
     <div class="fig-wrap">
-      <img src="assets/figures/fig1_corpus_composition.png" alt="Figure 1: MixtureVitae corpus composition by top-level category and license distribution" loading="lazy" />
+      <div style="display:grid; grid-template-columns:1fr 1fr;">
+        <img src="assets/figures/fig1a_pie.png" alt="Dataset composition by category" loading="lazy" style="width:100%;height:auto;display:block;" />
+        <img src="assets/figures/fig2a_synthetic.png" alt="Synthetic status breakdown by domain" loading="lazy" style="width:100%;height:auto;display:block;border-left:1px solid var(--border);" />
+      </div>
       <div class="fig-caption">
-        <strong>Figure 1.</strong> Corpus composition by top-level category (left) and governing license (right).
-        The dataset totals 422B tokens across web (34.5B), curated (210.6B), and reasoning &amp; instructions (177.2B).
-        The largest license slice is CC-BY-4.0 at 147.9B tokens (35.0%), followed by Apache at 122.7B (29.0%).
+        <strong>Figure 1a &amp; 2a.</strong> Left: corpus composition by top-level category — 422B tokens across web (34.5B), curated (210.6B), and reasoning &amp; instructions (177.2B). Right: synthetic-status breakdown per content domain — each bar shows the split between non-synthetic, mixed, and fully synthetic sources.
       </div>
     </div>
 
@@ -478,11 +459,9 @@
     </div>
 
     <div class="fig-wrap">
-      <img src="assets/figures/fig2_provenance.png" alt="Figure 2: Provenance tiers and synthetic-status distribution" loading="lazy" />
+      <img src="assets/figures/fig2b_tiers.png" alt="Figure 2b: Legal provenance and risk-mitigation tiers" loading="lazy" />
       <div class="fig-caption">
-        <strong>Figure 2.</strong> Left: synthetic-status breakdown per content domain—each domain is split
-        into non-synthetic, mixed, and fully synthetic sources. Right: provenance tier distribution across
-        the full corpus.
+        <strong>Figure 2b.</strong> Legal provenance and risk-mitigation tiers — Tier 1 (315.8B, 75.0%), Tier 2 (88.6B, 21.0%), Tier 3 (16.8B, 4.0%).
       </div>
     </div>
 
