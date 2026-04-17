@@ -3,99 +3,869 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MixtureVitae</title>
+  <title>MixtureVitae — Permissive-First Pretraining Dataset</title>
+  <meta name="description" content="MixtureVitae is a 422B-token open web-scale pretraining corpus built from permissive and risk-mitigated text sources, with auditable provenance tiers and dense instruction/reasoning data." />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Georgia', serif;
-      background: #fafafa;
-      color: #222;
-      line-height: 1.7;
-      padding: 3rem 1.5rem;
+
+    :root {
+      --fg: #1a1a1a;
+      --fg2: #444;
+      --fg3: #777;
+      --bg: #ffffff;
+      --bg2: #f7f7f5;
+      --bg3: #eeecea;
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+      --border: #e0ddd8;
+      --green: #166534;
+      --green-bg: #dcfce7;
+      --amber: #92400e;
+      --amber-bg: #fef3c7;
+      --serif: 'Georgia', 'Times New Roman', serif;
+      --sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --mono: 'Courier New', monospace;
+      --max: 860px;
     }
-    .container {
-      max-width: 760px;
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); color: var(--fg); background: var(--bg); line-height: 1.65; font-size: 16px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.6rem 1.5rem;
+    }
+    .nav-inner {
+      max-width: var(--max);
       margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
     }
-    h1 {
-      font-size: 2rem;
+    .nav-brand { font-weight: 700; font-size: 0.95rem; color: var(--fg); text-decoration: none; }
+    .nav-links { display: flex; gap: 1.2rem; list-style: none; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--fg2); font-size: 0.85rem; }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── Layout ── */
+    section { padding: 5rem 1.5rem; }
+    section:nth-child(even) { background: var(--bg2); }
+    .container { max-width: var(--max); margin: 0 auto; }
+    h2 {
+      font-family: var(--serif);
+      font-size: 1.65rem;
       font-weight: normal;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1.2rem;
+      color: var(--fg);
     }
-    .venue {
-      color: #666;
-      font-style: italic;
-      margin-bottom: 2rem;
+    h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.6rem; margin-top: 2rem; color: var(--fg); }
+    p { margin-bottom: 1rem; color: var(--fg2); }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── Hero ── */
+    #hero {
+      padding: 6rem 1.5rem 5rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
     }
-    .authors {
-      margin-bottom: 2rem;
+    .hero-inner { max-width: var(--max); margin: 0 auto; }
+    .venue-tag {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: normal;
+      line-height: 1.25;
+      margin-bottom: 0.75rem;
+    }
+    .hero-sub {
       font-size: 1.05rem;
+      color: var(--fg2);
+      max-width: 640px;
+      margin-bottom: 2rem;
+      line-height: 1.6;
     }
-    .section-title {
-      font-size: 0.75rem;
+    .btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 3rem; }
+    .btn {
+      display: inline-block;
+      padding: 0.5rem 1.1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1.5px solid var(--border);
+      color: var(--fg);
+      background: var(--bg);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn:hover { background: var(--bg3); border-color: #bbb; }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .btn-primary:hover { background: #1d4ed8; border-color: #1d4ed8; }
+
+    .stats-row { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .stat { min-width: 140px; }
+    .stat-num { font-size: 2rem; font-weight: 700; color: var(--fg); font-family: var(--serif); }
+    .stat-label { font-size: 0.8rem; color: var(--fg3); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* ── Figures ── */
+    .fig-wrap {
+      margin: 2rem 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .fig-wrap img { display: block; width: 100%; height: auto; }
+    .fig-caption {
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      color: var(--fg3);
+      border-top: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .fig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2rem 0; }
+    @media (max-width: 600px) { .fig-grid { grid-template-columns: 1fr; } }
+
+    /* ── Tier boxes ── */
+    .tier-list { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.5rem 0; }
+    .tier {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0.75rem;
+      align-items: start;
+      padding: 0.9rem 1rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .tier-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .tier-1 .tier-badge { background: var(--green-bg); color: var(--green); }
+    .tier-2 .tier-badge { background: var(--amber-bg); color: var(--amber); }
+    .tier-3 .tier-badge { background: #f0f9ff; color: #0369a1; }
+    .tier-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem; }
+    .tier-desc { font-size: 0.85rem; color: var(--fg2); }
+    .tier-tokens { font-size: 0.82rem; color: var(--fg3); white-space: nowrap; text-align: right; }
+
+    /* ── Results table ── */
+    .results-block { margin: 2rem 0; }
+    .results-lead {
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--fg);
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: var(--accent-light);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* ── Callout boxes ── */
+    .callout {
+      padding: 1rem 1.2rem;
+      border-radius: 6px;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+    }
+    .callout-green { background: var(--green-bg); border-color: #86efac; }
+    .callout-blue { background: var(--accent-light); border-color: #93c5fd; }
+    .callout p { color: var(--fg); margin: 0; font-size: 0.92rem; }
+    strong { color: var(--fg); }
+
+    /* ── Artifacts ── */
+    .artifact-group { margin: 1.5rem 0; }
+    .artifact-group-title {
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: #888;
-      margin-bottom: 0.4rem;
+      color: var(--fg3);
+      margin-bottom: 0.6rem;
+      font-weight: 600;
     }
-    .citation-block {
-      background: #f0f0f0;
-      border-left: 3px solid #999;
-      padding: 1rem 1.25rem;
-      font-family: 'Courier New', monospace;
+    .artifact-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+    .artifact-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+    }
+    .artifact-list li::before { content: '↗'; color: var(--fg3); font-size: 0.75rem; }
+    .artifact-list a { color: var(--accent); text-decoration: none; }
+    .artifact-list a:hover { text-decoration: underline; }
+    .pill {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    .pill-live { background: var(--green-bg); color: var(--green); }
+    .pill-planned { background: var(--bg3); color: var(--fg3); }
+
+    /* ── FAQ ── */
+    details {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 0.6rem;
+      background: var(--bg);
+    }
+    summary {
+      padding: 0.9rem 1rem;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.95rem;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '+'; color: var(--fg3); font-size: 1.1rem; }
+    details[open] summary::after { content: '−'; }
+    .faq-body { padding: 0 1rem 1rem; font-size: 0.9rem; color: var(--fg2); line-height: 1.7; }
+    .faq-body p { margin-bottom: 0.5rem; }
+
+    /* ── Citation ── */
+    .citation-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .citation-header {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg3);
+    }
+    .citation-header span { font-size: 0.78rem; color: var(--fg3); font-family: var(--mono); }
+    .copy-btn {
+      font-size: 0.78rem;
+      color: var(--accent);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+    }
+    .copy-btn:hover { text-decoration: underline; }
+    pre.bibtex {
+      padding: 1.2rem;
+      font-family: var(--mono);
       font-size: 0.82rem;
+      line-height: 1.6;
       white-space: pre-wrap;
       word-break: break-word;
-      border-radius: 2px;
+      color: var(--fg);
     }
-    .links {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-bottom: 2.5rem;
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--fg3);
     }
-    .links a {
-      display: inline-block;
-      padding: 0.4rem 1rem;
-      border: 1px solid #bbb;
-      border-radius: 4px;
-      text-decoration: none;
-      color: #333;
-      font-size: 0.9rem;
-      font-family: sans-serif;
-      transition: background 0.15s;
+
+    /* ── Accordion for extra evals ── */
+    .more-evals-toggle {
+      display: block;
+      margin: 1rem 0 0;
+      font-size: 0.85rem;
+      color: var(--accent);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      padding: 0;
     }
-    .links a:hover { background: #e8e8e8; }
-    hr { border: none; border-top: 1px solid #ddd; margin: 2rem 0; }
+    .more-evals-toggle:hover { text-decoration: underline; }
+    .more-evals-content { display: none; margin-top: 0.75rem; }
+    .more-evals-content.open { display: block; }
+
+    hr.section-rule { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+    /* ── Warning note ── */
+    .note {
+      font-size: 0.82rem;
+      color: var(--fg3);
+      padding: 0.75rem 1rem;
+      background: var(--bg2);
+      border-left: 3px solid #d1d5db;
+      border-radius: 0 4px 4px 0;
+      margin: 1rem 0;
+    }
   </style>
 </head>
 <body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="#">MixtureVitae</a>
+    <ul class="nav-links">
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#dataset">Dataset</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#integrity">Integrity</a></li>
+      <li><a href="#artifacts">Artifacts</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#citation">Citation</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="venue-tag">TMLR 2026</div>
+    <h1 class="hero-title">Permissive-first pretraining data<br>can be competitive</h1>
+    <p class="hero-sub">
+      MixtureVitae is a 422B-token open web-scale pretraining corpus built from permissive and
+      risk-mitigated text sources, with auditable provenance tiers and dense instruction and reasoning data.
+    </p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="assets/MixtureVitae_2026.pdf">Paper PDF</a>
+      <a class="btn" href="#citation">BibTeX</a>
+      <a class="btn" href="#artifacts">Dataset &amp; Code</a>
+      <a class="btn" href="#dataset">Provenance Tiers</a>
+    </div>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-num">422B</div>
+        <div class="stat-label">tokens</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">provenance tiers</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">36×</div>
+        <div class="stat-label">fewer tokens than SmolLM2<br>on GSM8K / HumanEval / MBPP</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Overview -->
+<section id="overview">
   <div class="container">
+    <h2>Why this matters</h2>
+    <p>
+      The strongest open pretraining corpora—FineWeb-Edu, DCLM—rely on mixed-license or unspecified web
+      data. Strictly permissive alternatives exist but tend to lag on reasoning-heavy tasks.
+      This forces practitioners into an uncomfortable choice: performance or auditability.
+    </p>
+    <p>
+      MixtureVitae is built for researchers who want stronger legal provenance without giving up competitive
+      downstream performance. It combines explicitly permissive and public-domain sources with narrowly
+      justified risk-mitigated additions, then front-loads reasoning and instruction density to improve
+      capability in small models.
+    </p>
+    <p>
+      The key design insight: reasoning and instruction signals are typically scarce in strictly permissive web
+      corpora and are usually reserved for post-training. MixtureVitae builds them into the pretraining
+      mixture itself—all generated from permissive seeds using permissively licensed models—and shows
+      this is the primary driver of capability gains.
+    </p>
+    <div class="callout callout-blue">
+      <p>
+        <strong>One-sentence summary.</strong> MixtureVitae is a 422B-token, permissive-first,
+        risk-mitigated pretraining dataset that uses dense instruction and reasoning data plus
+        provenance-aware curation to achieve strong small-model results, with decontamination and ablation
+        evidence supporting the claims.
+      </p>
+    </div>
+  </div>
+</section>
 
-    <h1>MixtureVitae</h1>
-    <p class="venue">Preprint, 2026</p>
-
-    <p class="authors">
-      <!-- TODO: add author names -->
+<!-- Dataset -->
+<section id="dataset">
+  <div class="container">
+    <h2>Dataset</h2>
+    <p>
+      MixtureVitae is built from three primary categories of sources: diverse web data for language and
+      general knowledge, curated domain-specific corpora, and—most distinctively—a large block of
+      instruction and reasoning datasets that would normally appear only at post-training.
     </p>
 
-    <div class="links">
-      <a href="#">Paper (PDF)</a>
-      <a href="#">arXiv</a>
-      <a href="#">Code</a>
+    <div class="fig-wrap">
+      <img src="assets/figures/fig1_corpus_composition.png" alt="Figure 1: MixtureVitae corpus composition by top-level category and license distribution" loading="lazy" />
+      <div class="fig-caption">
+        <strong>Figure 1.</strong> Corpus composition by top-level category (left) and governing license (right).
+        The dataset totals 422B tokens across web (34.5B), curated (210.6B), and reasoning &amp; instructions (177.2B).
+        The largest license slice is CC-BY-4.0 at 147.9B tokens (35.0%), followed by Apache at 122.7B (29.0%).
+      </div>
     </div>
 
-    <hr />
+    <h3>Three provenance tiers</h3>
+    <p>
+      Every source in MixtureVitae is assigned to one of three tiers reflecting its legal risk profile.
+      This tiering is <em>risk-mitigated</em>, not risk-free—copyright regimes vary across jurisdictions,
+      and Tier 2/Tier 3 users should consult local counsel where permissibility is jurisdiction-specific.
+    </p>
 
-    <p class="section-title">Citation</p>
-    <pre class="citation-block">@article{mixturevitae2026,
-  title   = {MixtureVitae},
-  author  = {},
-  journal = {},
+    <div class="tier-list">
+      <div class="tier tier-1">
+        <span class="tier-badge">Tier 1</span>
+        <div>
+          <div class="tier-name">Explicit Open Licenses &amp; Public Domain</div>
+          <div class="tier-desc">
+            Text and code under CC0, CC-BY, Apache 2.0, MIT, BSD, or in the public domain.
+            Also includes synthetic data generated from permissively licensed models and seed data.
+            Legal risk of reuse is minimal.
+          </div>
+        </div>
+        <div class="tier-tokens"><strong>315.8B</strong><br>75.0%</div>
+      </div>
+      <div class="tier tier-2">
+        <span class="tier-badge">Tier 2</span>
+        <div>
+          <div class="tier-name">Curated Permissive Repositories</div>
+          <div class="tier-desc">
+            <strong>2a:</strong> Permissive corpora with partial or unverified provenance (e.g. The Stack v1,
+            Wikipedia-derived sources). Released under permissive licenses but provenance is only partially
+            tracked at the file level.<br>
+            <strong>2b:</strong> ≈4% of the corpus—synthetic data where the generator model or seed data
+            has restricted or opaque provenance. Isolated for transparency; can be excluded without
+            measurable performance loss.
+          </div>
+        </div>
+        <div class="tier-tokens"><strong>88.6B</strong><br>21.0%</div>
+      </div>
+      <div class="tier tier-3">
+        <span class="tier-badge">Tier 3</span>
+        <div>
+          <div class="tier-name">Civic / Governmental Works</div>
+          <div class="tier-desc">
+            Materials that are statutory public domain (e.g. US federal works) or under a strong
+            public-purpose rationale for reuse (e.g. government websites, regulatory notices).
+            Further filtered with copyright keyword checks.
+          </div>
+        </div>
+        <div class="tier-tokens"><strong>16.8B</strong><br>4.0%</div>
+      </div>
+    </div>
+
+    <div class="fig-wrap">
+      <img src="assets/figures/fig2_provenance.png" alt="Figure 2: Provenance tiers and synthetic-status distribution" loading="lazy" />
+      <div class="fig-caption">
+        <strong>Figure 2.</strong> Left: synthetic-status breakdown per content domain—each domain is split
+        into non-synthetic, mixed, and fully synthetic sources. Right: provenance tier distribution across
+        the full corpus.
+      </div>
+    </div>
+
+    <h3>Detailed source breakdown</h3>
+    <p>
+      The largest individual contributors are Wikipedia (49.1B tokens), GlaiveAI Reasoning (38.4B),
+      Stack v1 (37.3B), Open Thoughts (27.9B), and Ling-Coder (27.4B).
+    </p>
+
+    <div class="fig-wrap">
+      <img src="assets/figures/fig6_detailed_sources.png" alt="Figure 6: Detailed source breakdown" loading="lazy" />
+      <div class="fig-caption">
+        <strong>Figure 6.</strong> Granular token counts for every source in MixtureVitae, grouped by content domain.
+      </div>
+    </div>
+
+    <div class="note">
+      Web data uses a positive-inclusion strategy rather than retroactive filtering of broad web scrapes.
+      Sources are selected by an allowlist of governmental and permissive domains, or by explicit
+      permissive-license keyword matching—not after-the-fact cleanup.
+    </div>
+  </div>
+</section>
+
+<!-- Results -->
+<section id="results">
+  <div class="container">
+    <h2>Results</h2>
+    <p>
+      All models are trained using the <a href="https://github.com/Reza-Alipour/open-sci-ref" style="color:var(--accent)">open-sci-ref</a>
+      protocol—fixed architecture, fixed hyperparameters, only the dataset varies—so performance
+      differences are attributable solely to the data. Evaluations cover 130M–1.7B parameters at
+      50B and 300B token budgets.
+    </p>
+
+    <hr class="section-rule" />
+    <h3>General benchmarks — competitive with mixed-license baselines, clear leader among permissive ones</h3>
+
+    <div class="results-lead">
+      At 1.7B parameters / 300B tokens: MixtureVitae avg <strong>0.56</strong>, matching DCLM (0.56) and
+      surpassing FineWeb-Edu (0.55), Comma-0.1 (0.50), and CommonCorpus (0.47).
+      On MMLU, MixtureVitae scores <strong>0.38</strong>—most permissive and non-permissive baselines
+      remain near random chance (0.25–0.27). On BoolQ: <strong>0.75</strong>.
+    </div>
+
+    <div class="fig-wrap">
+      <img src="assets/figures/fig3_benchmarks.png" alt="Figure 3: Benchmark performance for 1.7B model trained to 300B tokens" loading="lazy" />
+      <div class="fig-caption">
+        <strong>Figure 3.</strong> Average performance across 11 tasks (left) and MMLU (right) for a 1.7B model
+        as training progresses to 300B tokens. MixtureVitae (green) leads all permissive baselines throughout
+        and approaches or matches DCLM and FineWeb-Edu by 300B tokens.
+      </div>
+    </div>
+
+    <hr class="section-rule" />
+    <h3>Math, code, and instruction — a different class of results</h3>
+
+    <div class="results-lead">
+      GSM8K: <strong>0.53</strong> · HumanEval: <strong>0.32</strong> · MBPP: <strong>0.38</strong><br>
+      Every other dataset evaluated at 300B tokens scores 0.02–0.06 on GSM8K and caps at 0.13 on HumanEval.
+      The 1.7B MixtureVitae <em>base</em> model exceeds SmolLM2-1.7B-<em>Instruct</em>—trained on ≈11T tokens
+      (36× more)—on all three benchmarks.
+    </div>
+
+    <div class="fig-wrap">
+      <img src="assets/figures/tab2_math_code.png" alt="Table 2: Math, code and instruction-following results" loading="lazy" />
+      <div class="fig-caption">
+        <strong>Table 2.</strong> Performance on GSM8K, HumanEval, MBPP, and IF-Eval for 1.7B models.
+        MixtureVitae (300B tokens) is compared to all open-sci-ref baselines at 300B tokens, baselines
+        extended to 1T tokens, and post-trained reference models SmolLM2-1.7B and SmolLM2-1.7B-Instruct.
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <p>
+        These gains are not from post-training—the compared model is a base model. The large block of
+        permissive-first, synthetic reasoning and instruction data baked into the pretraining mixture
+        provides capabilities that typically require a separate supervised fine-tuning stage.
+      </p>
+    </div>
+
+    <details style="margin-top: 1.5rem;">
+      <summary>More evaluations (not decontaminated — treat as exploratory)</summary>
+      <div class="faq-body">
+        <p>
+          Additional benchmarks (e.g. harder reasoning tasks) appear in Appendix E of the paper.
+          The paper notes those additional evaluations were not explicitly decontaminated and should
+          be interpreted with appropriate caution. The headline results above—GSM8K, HumanEval,
+          MBPP, MMLU, BoolQ, ARC—are all fully decontaminated.
+        </p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- Integrity -->
+<section id="integrity">
+  <div class="container">
+    <h2>Integrity</h2>
+    <p>
+      Strong benchmark numbers on a dataset with heavy instruction content invite two natural questions:
+      <em>Is this contamination?</em> And <em>what specifically drives the gains?</em>
+      Both are addressed directly.
+    </p>
+
+    <h3>Decontamination</h3>
+    <p>
+      A full 13-gram exact-match decontamination sweep was run between MixtureVitae and all evaluated
+      benchmarks. Overlapping items were removed to create decontaminated test sets, and models were
+      retrained after removing the shards responsible for the majority of detected overlap.
+    </p>
+
+    <div class="callout callout-green">
+      <p>
+        GSM8K: <strong>0.54 decontaminated vs. 0.53 original</strong>. MBPP: <strong>0.38 vs. 0.38</strong>.
+        Scores are stable. The training trajectory of the retrained model tracks closely with the full model.
+      </p>
+    </div>
+
+    <div class="fig-wrap">
+      <img src="assets/figures/fig4_decontamination.png" alt="Figure 4: Decontamination robustness" loading="lazy" />
+      <div class="fig-caption">
+        <strong>Figure 4.</strong> Training trajectory of a 1.7B model at 100B tokens: full MixtureVitae (green)
+        versus the version retrained after removing contamination-heavy shards (purple dashed).
+        The curves are nearly identical, confirming results are not an artifact of test-set leakage.
+      </div>
+    </div>
+
+    <h3>Ablation</h3>
+    <p>
+      To isolate which components drive the gains, three 100B-token models were trained:
+      full MixtureVitae, without the web component, and without the instruction/reasoning component.
+    </p>
+    <p>
+      Removing instruction/reasoning data causes the largest drop by far.
+      GSM8K falls from <strong>0.47 → 0.03</strong> without instructions; removing web data only drops it
+      to 0.41. The web component contributes, but the instruction and reasoning data is the
+      primary causal driver of math and code gains.
+    </p>
+
+    <div class="fig-wrap">
+      <img src="assets/figures/fig5_ablation.png" alt="Figure 5: Ablation study" loading="lazy" />
+      <div class="fig-caption">
+        <strong>Figure 5.</strong> Left: average 10-task performance during training for the three ablation
+        configurations. Right: GSM8K, MBPP, and IF-Eval breakdowns. Removing instructions (orange)
+        causes a dramatic collapse on math and code while removing web (blue) has a much smaller effect.
+      </div>
+    </div>
+
+    <div class="note">
+      An additional ablation removing only Tier 2(b) components—synthetic data from non-permissive generators
+      or opaque seeds—produces a training trajectory indistinguishable from the full model.
+      Users with strict compliance requirements can safely exclude Tier 2(b) without measurable quality loss.
+    </div>
+  </div>
+</section>
+
+<!-- Artifacts -->
+<section id="artifacts">
+  <div class="container">
+    <h2>Artifacts</h2>
+    <p>
+      MixtureVitae is designed for reproducibility. The planned release covers the full corpus,
+      curation and evaluation code, and shard-level provenance metadata. Releases are staged
+      around acceptance.
+    </p>
+
+    <div class="artifact-group">
+      <div class="artifact-group-title">Available now</div>
+      <ul class="artifact-list">
+        <li>
+          <a href="assets/MixtureVitae_2026.pdf">Paper PDF</a>
+          <span class="pill pill-live">Live</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="artifact-group">
+      <div class="artifact-group-title">Planned at acceptance</div>
+      <ul class="artifact-list">
+        <li>Dataset card &amp; full 422B token corpus <span class="pill pill-planned">Planned</span></li>
+        <li>50B and 100B token subsets <span class="pill pill-planned">Planned</span></li>
+        <li>Shard-level provenance metadata <span class="pill pill-planned">Planned</span></li>
+        <li>Curation code <span class="pill pill-planned">Planned</span></li>
+        <li>Math word problem generation scripts <span class="pill pill-planned">Planned</span></li>
+        <li>Evaluation scripts <span class="pill pill-planned">Planned</span></li>
+        <li>Decontamination scripts <span class="pill pill-planned">Planned</span></li>
+        <li>Training script <span class="pill pill-planned">Planned</span></li>
+      </ul>
+    </div>
+
+    <div class="artifact-group">
+      <div class="artifact-group-title">Planned later</div>
+      <ul class="artifact-list">
+        <li>Pretrained model checkpoints (130M, 400M, 1.3B, 1.7B) <span class="pill pill-planned">Planned</span></li>
+        <li>Training logs <span class="pill pill-planned">Planned</span></li>
+      </ul>
+    </div>
+
+    <div class="note">
+      All code and data releases will be listed here. Watch the
+      <a href="https://github.com/MixtureVitae" style="color:var(--accent)">GitHub organization</a>
+      for updates.
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <h2>FAQ</h2>
+
+    <details>
+      <summary>What does "permissive-first" mean?</summary>
+      <div class="faq-body">
+        <p>
+          Permissive-first means the primary inclusion criterion for any source is its legal and licensing
+          status, not its quality score or popularity. A source is considered only if it carries a clear
+          permissive license (CC-BY, Apache 2.0, MIT, public domain) or falls into a narrowly justified
+          risk-mitigated category (government works, EU TDM-eligible sources). Quality and capability
+          are secondary filters applied within the permissive set.
+        </p>
+        <p>
+          This is in contrast to most web-scale corpora, which start from broad crawls and retroactively
+          filter out bad content—without filtering for licensing status.
+        </p>
+      </div>
+    </details>
+
+    <details>
+      <summary>What are the three provenance tiers?</summary>
+      <div class="faq-body">
+        <p>
+          <strong>Tier 1</strong> (75.0%, 315.8B tokens): explicit open licenses and public domain.
+          Text under CC0, CC-BY, Apache 2.0, MIT, BSD, or statutory public domain. Synthetic data
+          from permissively licensed models and seeds. Minimal legal risk.
+        </p>
+        <p>
+          <strong>Tier 2</strong> (21.0%, 88.6B tokens): curated permissive repositories with some upstream
+          opacity. Tier 2a includes resources like The Stack v1 and Wikipedia-derived corpora where
+          provenance is partially tracked but not fully auditable at the example level. Tier 2b (~4% of
+          total) is synthetic data where the generator or seed has restricted or opaque provenance—this
+          subset is isolated and can be excluded without performance loss.
+        </p>
+        <p>
+          <strong>Tier 3</strong> (4.0%, 16.8B tokens): civic and governmental works. Materials that are
+          statutory public domain (US federal works) or created for broad public dissemination (government
+          websites, regulatory notices). Further filtered with copyright keyword checks.
+        </p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Is the dataset fully risk-free?</summary>
+      <div class="faq-body">
+        <p>
+          No. The paper explicitly uses the term <em>risk-mitigated</em>, not risk-free. The tiering rests
+          primarily on US fair-use doctrine and the EU Text and Data Mining exception. Copyright regimes
+          differ across jurisdictions—international adopters should consult local counsel before deploying
+          Tier 2 or Tier 3 subsets in settings where their permissibility is jurisdiction-specific.
+        </p>
+        <p>
+          Users with strict compliance requirements can restrict to Tier 1 sources only.
+          The shard-level provenance metadata (released at acceptance) is designed to enable exactly this
+          kind of risk-aware subsetting.
+        </p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Why is there so much instruction and reasoning data?</summary>
+      <div class="faq-body">
+        <p>
+          Strictly permissive web corpora are nearly devoid of the kind of structured reasoning and
+          instruction-following examples that appear in human-written QA, math solutions, and code
+          explanations. This data is typically introduced during post-training (SFT, RLHF), but post-training
+          can't fully recover what pretraining never saw.
+        </p>
+        <p>
+          MixtureVitae front-loads this signal—177.2B tokens of reasoning and instruction data, all
+          generated from permissive seeds using permissively licensed models—into the pretraining mix.
+          The ablation confirms this is the primary driver of the GSM8K, HumanEval, and MBPP gains:
+          removing it drops GSM8K from 0.47 to 0.03.
+        </p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How was contamination checked?</summary>
+      <div class="faq-body">
+        <p>
+          A 13-gram exact-match decontamination sweep was run between MixtureVitae and all evaluated
+          benchmarks. Document-level overlap is at or below 0.0003% for ARC, HellaSwag, LAMBADA,
+          OpenBookQA, and PIQA. Code benchmarks (HumanEval, MBPP) have higher but still small rates.
+        </p>
+        <p>
+          Two additional tests were run: (1) re-evaluation on test sets with all overlapping items removed—
+          scores remain stable (GSM8K 0.54 vs 0.53 original); (2) retraining a 1.7B model after removing
+          shards responsible for the majority of contamination—the training trajectory is nearly identical
+          to the full model.
+        </p>
+      </div>
+    </details>
+
+    <details>
+      <summary>What will be released, and when?</summary>
+      <div class="faq-body">
+        <p>
+          At acceptance: the full 422B dataset, 50B and 100B subsets, shard-level provenance metadata,
+          curation code, math word problem generation scripts, evaluation scripts, decontamination scripts,
+          and training script.
+        </p>
+        <p>
+          In a later phase: pretrained model checkpoints (130M, 400M, 1.3B, 1.7B parameter scales)
+          and training logs.
+        </p>
+        <p>
+          All releases will be announced on this page and in the
+          <a href="https://github.com/MixtureVitae" style="color:var(--accent)">MixtureVitae GitHub organization</a>.
+        </p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How does MixtureVitae compare to Comma-0.1 and CommonCorpus?</summary>
+      <div class="faq-body">
+        <p>
+          Both Comma-0.1 and CommonCorpus are also permissive baselines. Key differences:
+        </p>
+        <p>
+          <strong>Token uniqueness:</strong> Comma-0.1's ≈1T training tokens contain only ≈316B unique
+          tokens due to up to 6× repetition. MixtureVitae contains 422B unique tokens.
+        </p>
+        <p>
+          <strong>Design:</strong> The Common Pile (the source corpus for Comma-0.1) deliberately avoids
+          synthetic data. MixtureVitae augments permissive sources with permissive-first synthetic
+          reasoning and instruction data organized into explicit legal-risk tiers.
+        </p>
+        <p>
+          <strong>Outcome:</strong> At 1.7B / 300B tokens, MixtureVitae averages 0.56 vs. Comma-0.1's 0.50
+          on general benchmarks, and dramatically outperforms on reasoning and code—GSM8K 0.53 vs. 0.06,
+          HumanEval 0.32 vs. 0.13, MBPP 0.38 vs. 0.22.
+        </p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- Citation -->
+<section id="citation">
+  <div class="container">
+    <h2>Citation</h2>
+    <p>If you use MixtureVitae in your work, please cite:</p>
+
+    <div class="citation-box">
+      <div class="citation-header">
+        <span>citation.bib</span>
+        <button class="copy-btn" onclick="copyBib()">Copy</button>
+      </div>
+      <pre class="bibtex" id="bibtex-block">@article{mixturevitae2026,
+  title   = {{MixtureVitae}: Open Web-Scale Pretraining Dataset With
+             High Quality Instruction and Reasoning Data Built from
+             Permissive-First Text Sources},
+  author  = {Anonymous Authors},
+  journal = {Transactions on Machine Learning Research},
   year    = {2026},
   url     = {https://mixturevitae.github.io}
 }</pre>
-
+    </div>
   </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>MixtureVitae · TMLR 2026 · <a href="https://github.com/MixtureVitae" style="color:inherit">GitHub</a> · <a href="assets/MixtureVitae_2026.pdf" style="color:inherit">Paper PDF</a></p>
+</footer>
+
+<script>
+function copyBib() {
+  const text = document.getElementById('bibtex-block').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+</script>
 </body>
 </html>
