@@ -314,6 +314,56 @@
 
     hr.section-rule { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 
+    /* ── Results table ── */
+    .table-wrap {
+      margin: 2rem 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .results-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .results-table th {
+      background: var(--bg3);
+      padding: 0.6rem 0.9rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--fg2);
+      border-bottom: 1px solid var(--border);
+    }
+    .results-table th:not(:first-child) { text-align: right; }
+    .results-table td {
+      padding: 0.55rem 0.9rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--fg2);
+    }
+    .results-table td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+    .results-table tr:last-child td { border-bottom: none; }
+    .results-table tr.ours td { background: #f0f7ff; color: var(--fg); }
+    .results-table tr.ours td strong { color: var(--accent); }
+    .results-table tr.group-header td {
+      background: var(--bg2);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--fg3);
+      padding: 0.4rem 0.9rem;
+    }
+    .tag-permissive, .tag-mixed {
+      font-size: 0.68rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      font-weight: 500;
+      margin-left: 0.3rem;
+      vertical-align: middle;
+    }
+    .tag-permissive { background: var(--green-bg); color: var(--green); }
+    .tag-mixed { background: var(--bg3); color: var(--fg3); }
+
     /* ── Warning note ── */
     .note {
       font-size: 0.82rem;
@@ -336,7 +386,6 @@
       <li><a href="#overview">Overview</a></li>
       <li><a href="#dataset">Dataset</a></li>
       <li><a href="#results">Results</a></li>
-      <li><a href="#integrity">Integrity</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#citation">Citation</a></li>
     </ul>
@@ -489,7 +538,10 @@
     </div>
 
     <div class="fig-wrap">
-      <img src="assets/figures/fig3_benchmarks.png" alt="Figure 3: Benchmark performance for 1.7B model trained to 300B tokens" loading="lazy" />
+      <div style="display:grid; grid-template-columns:1fr 1fr;">
+        <img src="assets/figures/fig3a_all.png" alt="Average performance across 11 tasks" loading="lazy" style="width:100%;height:auto;display:block;" />
+        <img src="assets/figures/fig3b_mmlu.png" alt="MMLU performance" loading="lazy" style="width:100%;height:auto;display:block;border-left:1px solid var(--border);" />
+      </div>
       <div class="fig-caption">
         <strong>Figure 3.</strong> Average performance across 11 tasks (left) and MMLU (right) for a 1.7B model
         as training progresses to 300B tokens. MixtureVitae (green) leads all permissive baselines throughout
@@ -507,12 +559,80 @@
       (36× more)—on all three benchmarks.
     </div>
 
-    <div class="fig-wrap">
-      <img src="assets/figures/tab2_math_code.png" alt="Table 2: Math, code and instruction-following results" loading="lazy" />
+    <div class="table-wrap">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Training dataset</th>
+            <th>Tokens</th>
+            <th>IF-Eval</th>
+            <th>GSM8K</th>
+            <th>HumanEval</th>
+            <th>MBPP</th>
+            <th>Avg</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group-header"><td colspan="7">open-sci-ref — 300B tokens</td></tr>
+          <tr class="ours">
+            <td><strong>MixtureVitae</strong> <span class="tag-permissive">permissive</span></td>
+            <td>300B</td><td>0.19</td><td><strong>0.53</strong></td><td><strong>0.32</strong></td><td><strong>0.38</strong></td><td><strong>0.36</strong></td>
+          </tr>
+          <tr>
+            <td>Comma-0.1 <span class="tag-permissive">permissive</span></td>
+            <td>300B</td><td>0.19</td><td>0.06</td><td>0.13</td><td>0.22</td><td>0.15</td>
+          </tr>
+          <tr>
+            <td>CommonCorpus <span class="tag-permissive">permissive</span></td>
+            <td>300B</td><td>0.13</td><td>0.02</td><td>0.05</td><td>0.05</td><td>0.06</td>
+          </tr>
+          <tr>
+            <td>C4 <span class="tag-mixed">mixed</span></td>
+            <td>300B</td><td>0.20</td><td>0.02</td><td>0.00</td><td>0.00</td><td>0.06</td>
+          </tr>
+          <tr>
+            <td>SlimPajama <span class="tag-mixed">mixed</span></td>
+            <td>300B</td><td>0.14</td><td>0.02</td><td>0.05</td><td>0.00</td><td>0.05</td>
+          </tr>
+          <tr>
+            <td>HPLT-2.0 <span class="tag-mixed">mixed</span></td>
+            <td>300B</td><td>0.17</td><td>0.02</td><td>0.00</td><td>0.00</td><td>0.05</td>
+          </tr>
+          <tr>
+            <td>DCLM <span class="tag-mixed">mixed</span></td>
+            <td>300B</td><td>0.13</td><td>0.02</td><td>0.01</td><td>0.01</td><td>0.04</td>
+          </tr>
+          <tr>
+            <td>Nemotron-CC-HQ <span class="tag-mixed">mixed</span></td>
+            <td>300B</td><td>0.09</td><td>0.03</td><td>0.02</td><td>0.00</td><td>0.03</td>
+          </tr>
+          <tr class="group-header"><td colspan="7">open-sci-ref — 1T tokens</td></tr>
+          <tr>
+            <td>FineWeb-Edu <span class="tag-mixed">mixed</span></td>
+            <td>1T</td><td>0.20</td><td>0.03</td><td>0.00</td><td>0.00</td><td>0.06</td>
+          </tr>
+          <tr>
+            <td>Nemotron-CC-HQ <span class="tag-mixed">mixed</span></td>
+            <td>1T</td><td>0.13</td><td>0.03</td><td>0.01</td><td>0.04</td><td>0.05</td>
+          </tr>
+          <tr>
+            <td>DCLM <span class="tag-mixed">mixed</span></td>
+            <td>1T</td><td>0.15</td><td>0.03</td><td>0.00</td><td>0.01</td><td>0.05</td>
+          </tr>
+          <tr class="group-header"><td colspan="7">Reference models</td></tr>
+          <tr>
+            <td>SmolLM2-1.7B</td>
+            <td>11T</td><td>0.18</td><td>0.31</td><td>0.01</td><td>0.35</td><td>0.21</td>
+          </tr>
+          <tr>
+            <td>SmolLM2-1.7B-Instruct</td>
+            <td>11T</td><td>0.28</td><td>0.37</td><td>0.28</td><td>0.37</td><td>0.33</td>
+          </tr>
+        </tbody>
+      </table>
       <div class="fig-caption">
-        <strong>Table 2.</strong> Performance on GSM8K, HumanEval, MBPP, and IF-Eval for 1.7B models.
-        MixtureVitae (300B tokens) is compared to all open-sci-ref baselines at 300B tokens, baselines
-        extended to 1T tokens, and post-trained reference models SmolLM2-1.7B and SmolLM2-1.7B-Instruct.
+        <strong>Table 2.</strong> Performance on math, code, and instruction-following tasks for 1.7B models.
+        MixtureVitae (300B tokens) is the only model that approaches or exceeds the post-trained SmolLM2-1.7B-Instruct on GSM8K, HumanEval, and MBPP—despite using 36× fewer tokens.
       </div>
     </div>
 
@@ -535,44 +655,6 @@
         </p>
       </div>
     </details>
-  </div>
-</section>
-
-<!-- Integrity -->
-<section id="integrity">
-  <div class="container">
-    <h2>Integrity</h2>
-    <p>
-      What specifically drives the gains? To isolate the contribution of individual components,
-      three 100B-token models were trained.
-    </p>
-
-    <h3>Ablation</h3>
-    <p>
-      To isolate which components drive the gains, three 100B-token models were trained:
-      full MixtureVitae, without the web component, and without the instruction/reasoning component.
-    </p>
-    <p>
-      Removing instruction/reasoning data causes the largest drop by far.
-      GSM8K falls from <strong>0.47 → 0.03</strong> without instructions; removing web data only drops it
-      to 0.41. The web component contributes, but the instruction and reasoning data is the
-      primary causal driver of math and code gains.
-    </p>
-
-    <div class="fig-wrap">
-      <img src="assets/figures/fig5_ablation.png" alt="Figure 5: Ablation study" loading="lazy" />
-      <div class="fig-caption">
-        <strong>Figure 5.</strong> Left: average 10-task performance during training for the three ablation
-        configurations. Right: GSM8K, MBPP, and IF-Eval breakdowns. Removing instructions (orange)
-        causes a dramatic collapse on math and code while removing web (blue) has a much smaller effect.
-      </div>
-    </div>
-
-    <div class="note">
-      An additional ablation removing only Tier 2(b) components—synthetic data from non-permissive generators
-      or opaque seeds—produces a training trajectory indistinguishable from the full model.
-      Users with strict compliance requirements can safely exclude Tier 2(b) without measurable quality loss.
-    </div>
   </div>
 </section>
 
