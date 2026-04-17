@@ -364,6 +364,29 @@
     .tag-permissive { background: var(--green-bg); color: var(--green); }
     .tag-mixed { background: var(--bg3); color: var(--fg3); }
 
+    /* ── Proof cards ── */
+    .proof-cards { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+    .proof-card {
+      flex: 1; min-width: 160px;
+      padding: 1rem 1.2rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+    .proof-num { font-size: 1.8rem; font-weight: 700; font-family: var(--serif); color: var(--fg); line-height: 1.1; }
+    .proof-label { font-size: 0.78rem; color: var(--fg3); margin-top: 0.25rem; }
+
+    /* ── Trust section ── */
+    .trust-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .trust-card {
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+    .trust-card-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; }
+    .trust-card p { font-size: 0.85rem; color: var(--fg2); margin: 0; }
+
     /* ── Warning note ── */
     .note {
       font-size: 0.82rem;
@@ -386,6 +409,7 @@
       <li><a href="#overview">Overview</a></li>
       <li><a href="#dataset">Dataset</a></li>
       <li><a href="#results">Results</a></li>
+      <li><a href="#trust">Evidence</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#citation">Citation</a></li>
     </ul>
@@ -396,12 +420,26 @@
 <section id="hero">
   <div class="hero-inner">
     <img class="hero-logo" src="assets/mv_logo.png" alt="MixtureVitae logo" />
-    <div class="venue-tag">TMLR 2026</div>
-    <h1 class="hero-title">Permissive-first pretraining data<br>can be competitive</h1>
+    <h1 class="hero-title">Cleaner pretraining data,<br>competitive results.</h1>
     <p class="hero-sub">
-      MixtureVitae is a 422B-token open web-scale pretraining corpus built from permissive and
-      risk-mitigated text sources, with auditable provenance tiers and dense instruction and reasoning data.
+      MixtureVitae is a 422B-token pretraining corpus built mostly from permissively licensed or public-domain text,
+      plus a small transparent risk-mitigated slice. Its main bet is simple: put reasoning and instruction data
+      into pretraining instead of saving it for fine-tuning.
     </p>
+    <div class="proof-cards">
+      <div class="proof-card">
+        <div class="proof-num">0.56</div>
+        <div class="proof-label">avg across 11 tasks<br>1.7B / 300B tokens</div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-num">0.53</div>
+        <div class="proof-label">GSM8K — base model,<br>no fine-tuning</div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-num">0.32 / 0.38</div>
+        <div class="proof-label">HumanEval / MBPP —<br>beats SmolLM2-Instruct (11T tokens)</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -410,30 +448,21 @@
   <div class="container">
     <h2>Why this matters</h2>
     <p>
-      The strongest open pretraining corpora—FineWeb-Edu, DCLM—rely on mixed-license or unspecified web
-      data. Strictly permissive alternatives exist but tend to lag on reasoning-heavy tasks.
-      This forces practitioners into an uncomfortable choice: performance or auditability.
+      Most high-performing pretraining datasets mix permissive content with copyrighted or ambiguously licensed material.
+      Datasets that stick strictly to permissive sources tend to fall behind on reasoning-heavy benchmarks.
+      That gap has made it hard to build capable models without accepting legal uncertainty.
     </p>
     <p>
-      MixtureVitae is built for researchers who want stronger legal provenance without giving up competitive
-      downstream performance. It combines explicitly permissive and public-domain sources with narrowly
-      justified risk-mitigated additions, then front-loads reasoning and instruction density to improve
-      capability in small models.
+      MixtureVitae is a direct attempt to close that gap. It starts with clearly reusable sources—CC-BY, Apache,
+      public domain—and adds a small, explicitly tagged set of lower-risk additions. Then, instead of treating
+      reasoning and instruction data as something to add later during fine-tuning, it builds them into the
+      pretraining mix from the start. Most synthetic data in the corpus comes from permissive seeds and
+      permissively licensed models; a small transparent slice uses restricted generators and is isolated
+      so users can exclude it if needed.
     </p>
     <p>
-      The key design insight: reasoning and instruction signals are typically scarce in strictly permissive web
-      corpora and are usually reserved for post-training. MixtureVitae builds them into the pretraining
-      mixture itself—all generated from permissive seeds using permissively licensed models—and shows
-      this is the primary driver of capability gains.
+      The result: strong benchmark results on a dataset whose provenance you can actually audit.
     </p>
-    <div class="callout callout-blue">
-      <p>
-        <strong>One-sentence summary.</strong> MixtureVitae is a 422B-token, permissive-first,
-        risk-mitigated pretraining dataset that uses dense instruction and reasoning data plus
-        provenance-aware curation to achieve strong small-model results, with decontamination and ablation
-        evidence supporting the claims.
-      </p>
-    </div>
   </div>
 </section>
 
@@ -442,9 +471,9 @@
   <div class="container">
     <h2>Dataset</h2>
     <p>
-      MixtureVitae is built from three primary categories of sources: diverse web data for language and
-      general knowledge, curated domain-specific corpora, and—most distinctively—a large block of
-      instruction and reasoning datasets that would normally appear only at post-training.
+      The corpus has three main parts: curated domain sources (scientific papers, code, encyclopedias, patents),
+      a reasoning and instruction block that would usually show up only at fine-tuning, and a smaller web component.
+      Each source is tagged with its synthetic status so the split is transparent.
     </p>
 
     <div class="fig-wrap">
@@ -453,15 +482,13 @@
         <img src="assets/figures/fig2a_synthetic.png" alt="Synthetic status breakdown by domain" loading="lazy" style="width:100%;height:auto;display:block;border-left:1px solid var(--border);" />
       </div>
       <div class="fig-caption">
-        <strong>Figure 1a &amp; 2a.</strong> Left: corpus composition by top-level category — 422B tokens across web (34.5B), curated (210.6B), and reasoning &amp; instructions (177.2B). Right: synthetic-status breakdown per content domain — each bar shows the split between non-synthetic, mixed, and fully synthetic sources.
+        Most of the corpus is curated or reasoning-focused, not raw web text. The right panel shows how much of each domain is synthetic, mixed, or fully human-written.
       </div>
     </div>
 
-    <h3>Three provenance tiers</h3>
+    <h3>Provenance tiers</h3>
     <p>
-      Every source in MixtureVitae is assigned to one of three tiers reflecting its legal risk profile.
-      This tiering is <em>risk-mitigated</em>, not risk-free—copyright regimes vary across jurisdictions,
-      and Tier 2/Tier 3 users should consult local counsel where permissibility is jurisdiction-specific.
+      Every source is assigned to one of three tiers. This is <em>risk-mitigated</em>, not risk-free—copyright law varies by jurisdiction, and users in some regions should get legal advice before using Tier 2 or Tier 3 material.
     </p>
 
     <div class="tier-list">
@@ -470,9 +497,8 @@
         <div>
           <div class="tier-name">Explicit Open Licenses &amp; Public Domain</div>
           <div class="tier-desc">
-            Text and code under CC0, CC-BY, Apache 2.0, MIT, BSD, or in the public domain.
-            Also includes synthetic data generated from permissively licensed models and seed data.
-            Legal risk of reuse is minimal.
+            CC0, CC-BY, Apache 2.0, MIT, BSD, or statutory public domain. Synthetic data generated
+            from permissively licensed models and seed data also lands here. The legal footing is clear.
           </div>
         </div>
         <div class="tier-tokens"><strong>315.8B</strong><br>75.0%</div>
@@ -482,12 +508,11 @@
         <div>
           <div class="tier-name">Curated Permissive Repositories</div>
           <div class="tier-desc">
-            <strong>2a:</strong> Permissive corpora with partial or unverified provenance (e.g. The Stack v1,
-            Wikipedia-derived sources). Released under permissive licenses but provenance is only partially
-            tracked at the file level.<br>
-            <strong>2b:</strong> ≈4% of the corpus—synthetic data where the generator model or seed data
-            has restricted or opaque provenance. Isolated for transparency; can be excluded without
-            measurable performance loss.
+            <strong>2a:</strong> Sources like The Stack v1 and Wikipedia derivatives — released under
+            permissive licenses, but provenance is only partially tracked at the file level.<br>
+            <strong>2b:</strong> ≈4% of the corpus — synthetic data from generators or seeds whose
+            provenance cannot be fully verified. Isolated so users can exclude it; removing it has
+            no measurable effect on benchmark scores.
           </div>
         </div>
         <div class="tier-tokens"><strong>88.6B</strong><br>21.0%</div>
@@ -497,9 +522,8 @@
         <div>
           <div class="tier-name">Civic / Governmental Works</div>
           <div class="tier-desc">
-            Materials that are statutory public domain (e.g. US federal works) or under a strong
-            public-purpose rationale for reuse (e.g. government websites, regulatory notices).
-            Further filtered with copyright keyword checks.
+            US federal works and government websites — statutory public domain or created for broad
+            public use. Further filtered with copyright keyword checks to reduce residual risk.
           </div>
         </div>
         <div class="tier-tokens"><strong>16.8B</strong><br>4.0%</div>
@@ -509,7 +533,7 @@
     <div class="fig-wrap">
       <img src="assets/figures/fig2b_tiers.png" alt="Figure 2b: Legal provenance and risk-mitigation tiers" loading="lazy" />
       <div class="fig-caption">
-        <strong>Figure 2b.</strong> Legal provenance and risk-mitigation tiers — Tier 1 (315.8B, 75.0%), Tier 2 (88.6B, 21.0%), Tier 3 (16.8B, 4.0%).
+        Three-quarters of the corpus sits in Tier 1 — explicit open licenses or public domain. The remaining quarter is tagged and can be subsetted.
       </div>
     </div>
 
@@ -521,21 +545,12 @@
   <div class="container">
     <h2>Results</h2>
     <p>
-      All models are trained using the <a href="https://github.com/Reza-Alipour/open-sci-ref" style="color:var(--accent)">open-sci-ref</a>
-      protocol—fixed architecture, fixed hyperparameters, only the dataset varies—so performance
-      differences are attributable solely to the data. Evaluations cover 130M–1.7B parameters at
-      50B and 300B token budgets.
+      All models use the same architecture and hyperparameters — only the dataset changes.
+      That makes it straightforward to attribute differences in benchmark scores to the data.
     </p>
 
     <hr class="section-rule" />
-    <h3>General benchmarks — competitive with mixed-license baselines, clear leader among permissive ones</h3>
-
-    <div class="results-lead">
-      At 1.7B parameters / 300B tokens: MixtureVitae avg <strong>0.56</strong>, matching DCLM (0.56) and
-      surpassing FineWeb-Edu (0.55), Comma-0.1 (0.50), and CommonCorpus (0.47).
-      On MMLU, MixtureVitae scores <strong>0.38</strong>—most permissive and non-permissive baselines
-      remain near random chance (0.25–0.27). On BoolQ: <strong>0.75</strong>.
-    </div>
+    <h3>General benchmarks</h3>
 
     <div class="fig-wrap">
       <div style="display:grid; grid-template-columns:1fr 1fr;">
@@ -543,9 +558,7 @@
         <img src="assets/figures/fig3b_mmlu.png" alt="MMLU performance" loading="lazy" style="width:100%;height:auto;display:block;border-left:1px solid var(--border);" />
       </div>
       <div class="fig-caption">
-        <strong>Figure 3.</strong> Average performance across 11 tasks (left) and MMLU (right) for a 1.7B model
-        as training progresses to 300B tokens. MixtureVitae (green) leads all permissive baselines throughout
-        and approaches or matches DCLM and FineWeb-Edu by 300B tokens.
+        MixtureVitae clearly leads other permissive corpora and closes most of the gap to mixed-license baselines by 300B tokens. The MMLU gap is especially large — most baselines stay near random chance while MixtureVitae reaches 0.38.
       </div>
     </div>
 
@@ -624,19 +637,47 @@
         </tbody>
       </table>
       <div class="fig-caption">
-        <strong>Table 2.</strong> Performance on math, code, and instruction-following tasks for 1.7B models.
-        MixtureVitae (300B tokens) is the only model that approaches or exceeds the post-trained SmolLM2-1.7B-Instruct on GSM8K, HumanEval, and MBPP—despite using 36× fewer tokens.
+        MixtureVitae is a base model trained on 300B tokens. SmolLM2-1.7B-Instruct is fine-tuned on roughly 11T tokens. MixtureVitae matches or beats it on GSM8K, HumanEval, and MBPP.
       </div>
     </div>
 
-    <div class="callout callout-green">
-      <p>
-        These gains are not from post-training—the compared model is a base model. The large block of
-        permissive-first, synthetic reasoning and instruction data baked into the pretraining mixture
-        provides capabilities that typically require a separate supervised fine-tuning stage.
-      </p>
-    </div>
+  </div>
+</section>
 
+<!-- Trust / Evidence -->
+<section id="trust">
+  <div class="container">
+    <h2>Why trust these results?</h2>
+    <p>
+      Heavy instruction content in a pretraining corpus raises an obvious question: are these scores
+      real, or is the model just memorizing test items? The paper addresses this directly.
+    </p>
+    <div class="trust-grid">
+      <div class="trust-card">
+        <div class="trust-card-title">Not a contamination artifact</div>
+        <p>A 13-gram decontamination sweep removed overlapping test items across all benchmarks.
+        Scores were stable — GSM8K went from 0.53 to 0.54, MBPP stayed at 0.38.
+        Retraining after removing the contaminated shards produced nearly identical results.</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-card-title">Instruction data is the main driver</div>
+        <p>Three models were trained: the full mix, without web data, and without instruction/reasoning data.
+        Removing instructions caused GSM8K to drop from 0.47 to 0.03.
+        Removing web data dropped it to 0.41. The instruction block is doing most of the work.</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-card-title">The uncertain slice can be removed</div>
+        <p>Tier 2(b) — synthetic data from restricted or opaque generators — makes up about 4% of the corpus.
+        Removing it produces a training curve indistinguishable from the full model.
+        Users who need stricter provenance can exclude it without giving up performance.</p>
+      </div>
+    </div>
+    <div class="fig-wrap">
+      <img src="assets/figures/fig5_ablation.png" alt="Ablation: removing instruction data collapses math and code scores" loading="lazy" />
+      <div class="fig-caption">
+        Ablation results: taking out the instruction and reasoning block (orange) causes a large drop across tasks. Taking out web data (blue) has a much smaller effect.
+      </div>
+    </div>
   </div>
 </section>
 
@@ -649,15 +690,14 @@
       <summary>What does "permissive-first" mean?</summary>
       <div class="faq-body">
         <p>
-          Permissive-first means the primary inclusion criterion for any source is its legal and licensing
-          status, not its quality score or popularity. A source is considered only if it carries a clear
-          permissive license (CC-BY, Apache 2.0, MIT, public domain) or falls into a narrowly justified
-          risk-mitigated category (government works, EU TDM-eligible sources). Quality and capability
-          are secondary filters applied within the permissive set.
+          MixtureVitae starts with sources that are clearly reusable. Licensing comes first; quality
+          is a secondary filter within that set.
         </p>
         <p>
-          This is in contrast to most web-scale corpora, which start from broad crawls and retroactively
-          filter out bad content—without filtering for licensing status.
+          Most web-scale datasets go the other direction — start from a broad crawl, filter out low-quality
+          content, and treat licensing as someone else's problem. MixtureVitae inverts that: a source only
+          gets in if its license is clear (CC-BY, Apache 2.0, public domain) or falls into a narrowly
+          justified lower-risk category like US government works.
         </p>
       </div>
     </details>
@@ -666,15 +706,14 @@
       <summary>Is the dataset fully risk-free?</summary>
       <div class="faq-body">
         <p>
-          No. The paper explicitly uses the term <em>risk-mitigated</em>, not risk-free. The tiering rests
-          primarily on US fair-use doctrine and the EU Text and Data Mining exception. Copyright regimes
-          differ across jurisdictions—international adopters should consult local counsel before deploying
-          Tier 2 or Tier 3 subsets in settings where their permissibility is jurisdiction-specific.
+          No. The goal is lower risk, not a universal legal guarantee. That is why the data is split into
+          tiers and why users can exclude the stricter slices.
         </p>
         <p>
-          Users with strict compliance requirements can restrict to Tier 1 sources only.
-          The shard-level provenance metadata (released at acceptance) is designed to enable exactly this
-          kind of risk-aware subsetting.
+          The tiering rests primarily on US fair-use doctrine and the EU Text and Data Mining exception.
+          Copyright law varies by country — if you are deploying Tier 2 or Tier 3 material commercially
+          outside the US or EU, it is worth talking to a lawyer. Users who want the most defensible subset
+          can restrict to Tier 1 only.
         </p>
       </div>
     </details>
@@ -683,21 +722,16 @@
       <summary>How does MixtureVitae compare to Comma-0.1 and CommonCorpus?</summary>
       <div class="faq-body">
         <p>
-          Both Comma-0.1 and CommonCorpus are also permissive baselines. Key differences:
+          Both are permissive baselines. The main difference is synthetic data.
+          The Common Pile (which Comma-0.1 trains on) deliberately avoids synthetic content.
+          MixtureVitae includes a large block of reasoning and instruction data generated from
+          permissive seeds — and that turns out to matter a lot for math and code.
         </p>
         <p>
-          <strong>Token uniqueness:</strong> Comma-0.1's ≈1T training tokens contain only ≈316B unique
-          tokens due to up to 6× repetition. MixtureVitae contains 422B unique tokens.
-        </p>
-        <p>
-          <strong>Design:</strong> The Common Pile (the source corpus for Comma-0.1) deliberately avoids
-          synthetic data. MixtureVitae augments permissive sources with permissive-first synthetic
-          reasoning and instruction data organized into explicit legal-risk tiers.
-        </p>
-        <p>
-          <strong>Outcome:</strong> At 1.7B / 300B tokens, MixtureVitae averages 0.56 vs. Comma-0.1's 0.50
-          on general benchmarks, and dramatically outperforms on reasoning and code—GSM8K 0.53 vs. 0.06,
-          HumanEval 0.32 vs. 0.13, MBPP 0.38 vs. 0.22.
+          On general benchmarks at 1.7B / 300B tokens: MixtureVitae 0.56, Comma-0.1 0.50, CommonCorpus 0.47.
+          On GSM8K specifically: 0.53 vs. 0.06 vs. 0.02.
+          Comma-0.1 also repeats most of its sources up to 6× to reach 1T tokens — MixtureVitae
+          contains 422B unique tokens without repetition.
         </p>
       </div>
     </details>
@@ -730,7 +764,7 @@
 
 <!-- Footer -->
 <footer>
-  <p>MixtureVitae · TMLR 2026 · <a href="https://github.com/MixtureVitae" style="color:inherit">GitHub</a> · <a href="assets/MixtureVitae_2026.pdf" style="color:inherit">Paper PDF</a></p>
+  <p>MixtureVitae · <a href="https://github.com/MixtureVitae" style="color:inherit">GitHub</a> · <a href="assets/MixtureVitae_2026.pdf" style="color:inherit">Paper PDF</a></p>
 </footer>
 
 <script>
