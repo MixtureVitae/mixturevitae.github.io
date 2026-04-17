@@ -337,7 +337,6 @@
       <li><a href="#dataset">Dataset</a></li>
       <li><a href="#results">Results</a></li>
       <li><a href="#integrity">Integrity</a></li>
-      <li><a href="#artifacts">Artifacts</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#citation">Citation</a></li>
     </ul>
@@ -465,24 +464,6 @@
       </div>
     </div>
 
-    <h3>Detailed source breakdown</h3>
-    <p>
-      The largest individual contributors are Wikipedia (49.1B tokens), GlaiveAI Reasoning (38.4B),
-      Stack v1 (37.3B), Open Thoughts (27.9B), and Ling-Coder (27.4B).
-    </p>
-
-    <div class="fig-wrap">
-      <img src="assets/figures/fig6_detailed_sources.png" alt="Figure 6: Detailed source breakdown" loading="lazy" />
-      <div class="fig-caption">
-        <strong>Figure 6.</strong> Granular token counts for every source in MixtureVitae, grouped by content domain.
-      </div>
-    </div>
-
-    <div class="note">
-      Web data uses a positive-inclusion strategy rather than retroactive filtering of broad web scrapes.
-      Sources are selected by an allowlist of governmental and permissive domains, or by explicit
-      permissive-license keyword matching—not after-the-fact cleanup.
-    </div>
   </div>
 </section>
 
@@ -562,33 +543,9 @@
   <div class="container">
     <h2>Integrity</h2>
     <p>
-      Strong benchmark numbers on a dataset with heavy instruction content invite two natural questions:
-      <em>Is this contamination?</em> And <em>what specifically drives the gains?</em>
-      Both are addressed directly.
+      What specifically drives the gains? To isolate the contribution of individual components,
+      three 100B-token models were trained.
     </p>
-
-    <h3>Decontamination</h3>
-    <p>
-      A full 13-gram exact-match decontamination sweep was run between MixtureVitae and all evaluated
-      benchmarks. Overlapping items were removed to create decontaminated test sets, and models were
-      retrained after removing the shards responsible for the majority of detected overlap.
-    </p>
-
-    <div class="callout callout-green">
-      <p>
-        GSM8K: <strong>0.54 decontaminated vs. 0.53 original</strong>. MBPP: <strong>0.38 vs. 0.38</strong>.
-        Scores are stable. The training trajectory of the retrained model tracks closely with the full model.
-      </p>
-    </div>
-
-    <div class="fig-wrap">
-      <img src="assets/figures/fig4_decontamination.png" alt="Figure 4: Decontamination robustness" loading="lazy" />
-      <div class="fig-caption">
-        <strong>Figure 4.</strong> Training trajectory of a 1.7B model at 100B tokens: full MixtureVitae (green)
-        versus the version retrained after removing contamination-heavy shards (purple dashed).
-        The curves are nearly identical, confirming results are not an artifact of test-set leakage.
-      </div>
-    </div>
 
     <h3>Ablation</h3>
     <p>
@@ -619,56 +576,6 @@
   </div>
 </section>
 
-<!-- Artifacts -->
-<section id="artifacts">
-  <div class="container">
-    <h2>Artifacts</h2>
-    <p>
-      MixtureVitae is designed for reproducibility. The planned release covers the full corpus,
-      curation and evaluation code, and shard-level provenance metadata. Releases are staged
-      around acceptance.
-    </p>
-
-    <div class="artifact-group">
-      <div class="artifact-group-title">Available now</div>
-      <ul class="artifact-list">
-        <li>
-          <a href="assets/MixtureVitae_2026.pdf">Paper PDF</a>
-          <span class="pill pill-live">Live</span>
-        </li>
-      </ul>
-    </div>
-
-    <div class="artifact-group">
-      <div class="artifact-group-title">Planned at acceptance</div>
-      <ul class="artifact-list">
-        <li>Dataset card &amp; full 422B token corpus <span class="pill pill-planned">Planned</span></li>
-        <li>50B and 100B token subsets <span class="pill pill-planned">Planned</span></li>
-        <li>Shard-level provenance metadata <span class="pill pill-planned">Planned</span></li>
-        <li>Curation code <span class="pill pill-planned">Planned</span></li>
-        <li>Math word problem generation scripts <span class="pill pill-planned">Planned</span></li>
-        <li>Evaluation scripts <span class="pill pill-planned">Planned</span></li>
-        <li>Decontamination scripts <span class="pill pill-planned">Planned</span></li>
-        <li>Training script <span class="pill pill-planned">Planned</span></li>
-      </ul>
-    </div>
-
-    <div class="artifact-group">
-      <div class="artifact-group-title">Planned later</div>
-      <ul class="artifact-list">
-        <li>Pretrained model checkpoints (130M, 400M, 1.3B, 1.7B) <span class="pill pill-planned">Planned</span></li>
-        <li>Training logs <span class="pill pill-planned">Planned</span></li>
-      </ul>
-    </div>
-
-    <div class="note">
-      All code and data releases will be listed here. Watch the
-      <a href="https://github.com/MixtureVitae" style="color:var(--accent)">GitHub organization</a>
-      for updates.
-    </div>
-  </div>
-</section>
-
 <!-- FAQ -->
 <section id="faq">
   <div class="container">
@@ -692,29 +599,6 @@
     </details>
 
     <details>
-      <summary>What are the three provenance tiers?</summary>
-      <div class="faq-body">
-        <p>
-          <strong>Tier 1</strong> (75.0%, 315.8B tokens): explicit open licenses and public domain.
-          Text under CC0, CC-BY, Apache 2.0, MIT, BSD, or statutory public domain. Synthetic data
-          from permissively licensed models and seeds. Minimal legal risk.
-        </p>
-        <p>
-          <strong>Tier 2</strong> (21.0%, 88.6B tokens): curated permissive repositories with some upstream
-          opacity. Tier 2a includes resources like The Stack v1 and Wikipedia-derived corpora where
-          provenance is partially tracked but not fully auditable at the example level. Tier 2b (~4% of
-          total) is synthetic data where the generator or seed has restricted or opaque provenance—this
-          subset is isolated and can be excluded without performance loss.
-        </p>
-        <p>
-          <strong>Tier 3</strong> (4.0%, 16.8B tokens): civic and governmental works. Materials that are
-          statutory public domain (US federal works) or created for broad public dissemination (government
-          websites, regulatory notices). Further filtered with copyright keyword checks.
-        </p>
-      </div>
-    </details>
-
-    <details>
       <summary>Is the dataset fully risk-free?</summary>
       <div class="faq-body">
         <p>
@@ -727,60 +611,6 @@
           Users with strict compliance requirements can restrict to Tier 1 sources only.
           The shard-level provenance metadata (released at acceptance) is designed to enable exactly this
           kind of risk-aware subsetting.
-        </p>
-      </div>
-    </details>
-
-    <details>
-      <summary>Why is there so much instruction and reasoning data?</summary>
-      <div class="faq-body">
-        <p>
-          Strictly permissive web corpora are nearly devoid of the kind of structured reasoning and
-          instruction-following examples that appear in human-written QA, math solutions, and code
-          explanations. This data is typically introduced during post-training (SFT, RLHF), but post-training
-          can't fully recover what pretraining never saw.
-        </p>
-        <p>
-          MixtureVitae front-loads this signal—177.2B tokens of reasoning and instruction data, all
-          generated from permissive seeds using permissively licensed models—into the pretraining mix.
-          The ablation confirms this is the primary driver of the GSM8K, HumanEval, and MBPP gains:
-          removing it drops GSM8K from 0.47 to 0.03.
-        </p>
-      </div>
-    </details>
-
-    <details>
-      <summary>How was contamination checked?</summary>
-      <div class="faq-body">
-        <p>
-          A 13-gram exact-match decontamination sweep was run between MixtureVitae and all evaluated
-          benchmarks. Document-level overlap is at or below 0.0003% for ARC, HellaSwag, LAMBADA,
-          OpenBookQA, and PIQA. Code benchmarks (HumanEval, MBPP) have higher but still small rates.
-        </p>
-        <p>
-          Two additional tests were run: (1) re-evaluation on test sets with all overlapping items removed—
-          scores remain stable (GSM8K 0.54 vs 0.53 original); (2) retraining a 1.7B model after removing
-          shards responsible for the majority of contamination—the training trajectory is nearly identical
-          to the full model.
-        </p>
-      </div>
-    </details>
-
-    <details>
-      <summary>What will be released, and when?</summary>
-      <div class="faq-body">
-        <p>
-          At acceptance: the full 422B dataset, 50B and 100B subsets, shard-level provenance metadata,
-          curation code, math word problem generation scripts, evaluation scripts, decontamination scripts,
-          and training script.
-        </p>
-        <p>
-          In a later phase: pretrained model checkpoints (130M, 400M, 1.3B, 1.7B parameter scales)
-          and training logs.
-        </p>
-        <p>
-          All releases will be announced on this page and in the
-          <a href="https://github.com/MixtureVitae" style="color:var(--accent)">MixtureVitae GitHub organization</a>.
         </p>
       </div>
     </details>
